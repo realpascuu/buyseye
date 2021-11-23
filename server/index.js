@@ -29,8 +29,8 @@ var mysql = require('mysql');
 var conexionBD = mysql.createConnection({
     host: 'localhost',
     database: 'buyseye',
-    user: 'root',
-    password: 'Pj806Ljhew21mNt_p8'
+    user: 'adi',
+    password: 'jksIjGn9QZM7bk2P'
 });
 
 // Conectarse a la BD antes especificada
