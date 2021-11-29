@@ -41,7 +41,7 @@ conexionBD.connect((error) => {
 
 // login
 app.post('/auth/login', (req, res) => {
-    const userLog = req.body[0];
+    const userLog = req.body;
     const sql = 'SELECT * from usuarios WHERE usuarios.username = \'' + userLog.username + '\'';
     // consultamos en BD si existe el usuario y si el password es correcto
     conexionBD.query(sql, (error, results) => {
