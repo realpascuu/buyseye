@@ -1,21 +1,29 @@
 <template>
-<div class="mt-4 container-fluid rounded col-3 shadow align-text-bottom">
-    <div class="row pt-3">
-        <img class="img-logo" src="../assets/logoletra.png">
+<div class="container-fluid">
+    <div  class="mt-4 container-fluid rounded col-lg-3 col-sm-6 shadow">
+        <div class="row pt-3">
+            <img class="img-logo" src="../assets/logoletra.png">
+        </div>
+        <div class="separator row"></div>
+        <div class="m-2 p-1">
+            <input required class="form-control" v-model="login" type="text" placeholder="Username">
+        </div>
+        <div class="m-2 p-1">
+            <input required class="form-control" v-model="password" type="password" placeholder="Contraseña">
+        </div>
+        <div class="row m-2 p-1">
+            <button class="btn btn-dark shadow" @click="doLogin()">Entrar</button>
+        </div>
+        <div class="separator row"></div>
+        <div class="row p-3">
+            <a href="/register">Regístrate aquí</a>
+        </div>
     </div>
-    <div class="separator row"></div>
-    <div class="m-2 p-1">
-        <input required class="form-control" v-model="login" type="text" placeholder="Username">
-    </div>
-    <div class="m-2 p-1">
-        <input required class="form-control" v-model="password" type="password" placeholder="Contraseña">
-    </div>
-    <div class="row m-2 p-1">
-        <button class="btn btn-dark shadow" @click="doLogin()">Entrar</button>
-    </div>
-    <div class="separator row"></div>
-    <div class="row p-3">
-        <a class="" href="/register">Regístrate aquí</a>
+    <div id="alerta" class="alert alert-danger shadow container fade show mt-2 col-lg-5 col-sm-8" role="alert" hidden>
+        <button type="button" class="bg-transparent border-0 float-end close" data-dismiss="alert" aria-label="Close" @click="ocultarAlert()">
+        <span aria-hidden="true">&times;</span>
+        </button>
+        Usuario o contraseña incorrectos.
     </div>
 </div>
 </template>
@@ -41,8 +49,14 @@ export default {
                 this.$router.push('/home');
                 
             } else {
-                window.alert("Usuario o contraseña incorrecta!");
+                var alerta = document.getElementById('alerta');
+                alerta.hidden = false;
             }
+        },
+
+        ocultarAlert() {
+            var alerta = document.getElementById('alerta');
+            alerta.hidden = true;
         }
     }
 }
