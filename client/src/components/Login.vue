@@ -12,7 +12,7 @@
             <input required class="form-control" v-model="password" type="password" placeholder="Contraseña">
         </div>
         <div class="row m-2 p-1">
-            <button class="btn btn-dark shadow" @click="doLogin()">Entrar</button>
+            <button id="boton-entrar" class="btn btn-dark shadow" @click="doLogin()">Entrar</button>
         </div>
         <div class="separator row"></div>
         <div class="row p-3">
@@ -30,6 +30,8 @@
 
 <script>
 import Cliente from '../services/ClientAPI.js'
+import anime from 'animejs'
+
 export default {
     name:'Login',
     data() {
@@ -50,6 +52,20 @@ export default {
                 
             } else {
                 var alerta = document.getElementById('alerta');
+                var boton = document.getElementById('boton-entrar');
+                // declaramos animación SHAKE del botón
+                var botonShake = anime({
+                    targets: boton,
+                    duration: 550,
+                    translateX: [
+                        { value: -20, },
+                        { value: 20, },
+                        { value:-10, },
+                        { value: 10, },
+                        { value: 0, },
+                    ],
+                });
+                botonShake.restart;
                 alerta.hidden = false;
             }
         },
