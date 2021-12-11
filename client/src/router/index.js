@@ -1,13 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '../components/Login.vue'
 
 Vue.use(VueRouter)
 
 const routes = [{
         path: '/login',
         name: 'Login',
-        component: Login
+        component: () =>
+            import ( /*vista login */ '../views/Login.vue'),
+        meta: {
+            title: 'Login'
+        }
     },
     {
         path: '/home',
@@ -35,5 +38,11 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes
 })
+
+// poner título a la página
+const DEFAULT_TITLE = 'Buyseye'
+router.afterEach((to) => {
+    document.title = to.meta.title || DEFAULT_TITLE;
+});
 
 export default router

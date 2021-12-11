@@ -1,22 +1,22 @@
 <template>
-<div class="container-fluid">
+<div class="container-fluid p-4">
     <div  class="mt-4 container-fluid rounded col-lg-3 col-sm-6 shadow">
-        <div class="row pt-3">
-            <img class="img-logo" src="../assets/logoletra.png">
+        <div class="pb-4 pt-3 border-bottom">
+            <img class="img-logo pt-1 pb-1" src="../assets/logoletra.png">
         </div>
-        <div class="separator row"></div>
-        <div class="m-2 p-1">
-            <input required class="form-control" v-model="login" type="text" placeholder="Username">
+        <div class="pb-4 pt-4 border-bottom">
+            <div class="m-2 p-1">
+                <input required class="form-control" v-model="login" type="text" placeholder="Username">
+            </div>
+            <div class="m-2 p-1">
+                <input required class="form-control" v-model="password" type="password" placeholder="Contraseña">
+            </div>
+            <div class="row m-2 p-1">
+                <button id="boton-entrar" class="btn btn-dark shadow" @click="doLogin()">Entrar</button>
+            </div>
         </div>
-        <div class="m-2 p-1">
-            <input required class="form-control" v-model="password" type="password" placeholder="Contraseña">
-        </div>
-        <div class="row m-2 p-1">
-            <button id="boton-entrar" class="btn btn-dark shadow" @click="doLogin()">Entrar</button>
-        </div>
-        <div class="separator row"></div>
-        <div class="row p-3">
-            <a href="/register">Regístrate aquí</a>
+        <div class="row p-2">
+            <router-link to="/register" class="text-center btn text-primary">Regístrate aquí</router-link>
         </div>
     </div>
     <div id="alerta" class="alert alert-danger shadow container fade show mt-2 col-lg-5 col-sm-8" role="alert" hidden>
@@ -29,28 +29,33 @@
 </template>
 
 <script>
-import Cliente from '../services/ClientAPI.js'
 import anime from 'animejs'
+import axios from 'axios'
 
 export default {
     name:'Login',
     data() {
         return {
             login: '',
-            password: '',
-            cliente: new Cliente('http://localhost:3000')
+            password: ''
         }
     },
     methods: {
         async doLogin() {
-            console.log('Login para ' + this.login + ' con password ' + this.password)
-            var resp = await this.cliente.doLogin(this.login, this.password);
-            if(resp.length > 0) {
-                localStorage.setItem('token', resp);
+            // llamamos a la API
+            axios.post("http://localhost:3000/auth/login", { 
+                username: this.login, 
+                password: this.password 
+            }).then((resp) => {
+                // respuesta correcta
+                console.log("inicio de sesión correcto!")
+                var token = resp.data.token;
+                localStorage.setItem('token', token);
                 console.log(localStorage.getItem('token'));
                 this.$router.push('/home');
-                
-            } else {
+            }).catch((error) => {
+                // fallo
+                console.log(error);
                 var alerta = document.getElementById('alerta');
                 var boton = document.getElementById('boton-entrar');
                 // declaramos animación SHAKE del botón
@@ -67,7 +72,7 @@ export default {
                 });
                 botonShake.restart;
                 alerta.hidden = false;
-            }
+            });
         },
 
         ocultarAlert() {
@@ -80,8 +85,9 @@ export default {
 
 <style>
 .img-logo {
-    height: 150px;
-    width: 150px;
+    display: flex;
+    height: 200px;
+    width: 200px;
     margin: 0 auto;
 }
 .separator {

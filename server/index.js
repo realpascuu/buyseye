@@ -52,6 +52,7 @@ app.post('/auth/login', (req, res) => {
         } else {
             if (results.length < 1) {
                 // NO existe usuario con ese username
+                console.log("usuario no existe")
                 res.status(400);
                 res.type('plain/text');
                 res.send('No existe usuario.').end();
@@ -59,6 +60,7 @@ app.post('/auth/login', (req, res) => {
                 // usuario existe
                 if (userLog.password != results[0].password) {
                     // Contraseña incorrecta
+                    console.log("contraseña incorrecta")
                     res.status(400);
                     res.type('plain/text');
                     res.send('Contraseña incorrecta.').end();
