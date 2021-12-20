@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import jwt_decode from 'jwt-decode'
+import moment from 'moment'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -19,6 +20,15 @@ const routes = [{
             import ('../views/Home.vue')
     },
     {
+        path: '/register',
+        name: 'Register',
+        component: () =>
+            import ('../components/Register.vue'),
+        meta: {
+            title: 'Registro'
+        }
+    },
+    {
         path: '/about',
         name: 'About',
         // route level code-splitting
@@ -29,7 +39,12 @@ const routes = [{
     },
     {
         path: '/',
-        redirect: '/login'
+        redirect: () => {
+            if (localStorage.getItem('token') != null) {
+                return '/home'
+            }
+            return '/login'
+        }
     }
 ]
 
@@ -43,6 +58,14 @@ const router = new VueRouter({
 const DEFAULT_TITLE = 'Buyseye'
 router.afterEach((to) => {
     document.title = to.meta.title || DEFAULT_TITLE;
+    if (localStorage.getItem('token') != null) {
+        var decoded = jwt_decode(localStorage.getItem('token'))
+        if (moment().unix() > decoded.exp) {
+            console.log('¡Se borra token porque se ha expirado!')
+            localStorage.removeItem('token');
+            router.push('/');
+        }
+    }
 });
 
 export default router

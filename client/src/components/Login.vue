@@ -1,6 +1,6 @@
 <template>
 <div class="container-fluid p-4">
-    <div  class="mt-4 container-fluid rounded col-lg-3 col-sm-6 shadow">
+    <div  class="mt-4 container-fluid rounded col-md-5 col-lg-4 col-sm-6 col-xl-3 shadow">
         <div class="pb-4 pt-3 border-bottom">
             <img class="img-logo pt-1 pb-1" src="../assets/logoletra.png">
         </div>
@@ -34,14 +34,14 @@ import axios from 'axios'
 
 export default {
     name:'Login',
-    data() {
+    data: () => {
         return {
             login: '',
             password: ''
         }
     },
     methods: {
-        async doLogin() {
+        async doLogin () {
             // llamamos a la API
             axios.post("http://localhost:3000/auth/login", { 
                 username: this.login, 
@@ -51,7 +51,6 @@ export default {
                 console.log("inicio de sesión correcto!")
                 var token = resp.data.token;
                 localStorage.setItem('token', token);
-                console.log(localStorage.getItem('token'));
                 this.$router.push('/home');
             }).catch((error) => {
                 // fallo
@@ -86,12 +85,8 @@ export default {
 <style>
 .img-logo {
     display: flex;
-    height: 200px;
-    width: 200px;
+    height: 50%;
+    width: 50%;
     margin: 0 auto;
-}
-.separator {
-    border-top: 1px solid grey;
-    height: 2px;
 }
 </style>

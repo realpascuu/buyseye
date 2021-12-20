@@ -90,7 +90,7 @@ app.route('/api/usuarios')
         });
     })
     .post((req, res) => {
-        var nuevoUser = req.body[0];
+        var nuevoUser = req.body;
         const sql = 'INSERT INTO usuarios (username, email, nombre, apellidos, fecha_nacimiento, direccion, password) VALUES (' +
             '\'' + nuevoUser.username + '\', ' +
             '\'' + nuevoUser.email + '\', ' +
@@ -210,7 +210,7 @@ app.route('/api/productos/:id')
         });
     })
     .put(middleware.yaHaSidoAutetificado, (req, res) => {
-        var productoActualizado = req.body[0];
+        var productoActualizado = req.body;
         const sql = 'UPDATE productos ' +
             ' SET productos.nombre = \'' + productoActualizado.nombre + '\', ' +
             'productos.descripcion = \'' + productoActualizado.descripcion + '\', ' +

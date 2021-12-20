@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 
 // Importar archivos CSS Bootstrap y BootstrapVue
 import 'bootstrap/dist/css/bootstrap.css'
@@ -17,5 +17,5 @@ new Vue({
 
 // Usar Bootstrap e Icons en el proyecto
 Vue.use(BootstrapVue)
-Vue.use(IconsPlugin)
+Vue.use(BootstrapVueIcons)
 Vue.use(anime)
