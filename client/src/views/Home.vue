@@ -4,7 +4,7 @@
     <div class="container">
     <div class="d-flex justify-content-center p-4">
       <div class="">
-        <div class="group-card d-lg-flex">
+        <div class="group-card d-lg-flex text-center">
           <router-link to="/usuarios" class="btn">
             <div class="card p-5 btn mx-5 my-5 boton-usuarios">
               Usuarios

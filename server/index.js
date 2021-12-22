@@ -23,6 +23,7 @@ var bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
 
+
 // Cargar modulo mysql
 var mysql = require('mysql');
 // Configuración conexión BD
@@ -38,6 +39,19 @@ conexionBD.connect((error) => {
     if (error) throw error;
     console.log('Conexión realizada con éxito con BD MySQL');
 });
+
+const obtenerUsuario = (id) => {
+    return new Promise((resolve, reject) => {
+        const sql1 = 'SELECT id, username, email, nombre, apellidos, direccion, fecha_nacimiento FROM usuarios WHERE usuarios.id = ' + id;
+        conexionBD.query(sql1, (error, results) => {
+            if (error) {
+                return reject(error)
+            } else {
+                return resolve(results[0])
+            }
+        });
+    });
+}
 
 // login
 app.post('/auth/login', (req, res) => {
@@ -74,6 +88,73 @@ app.post('/auth/login', (req, res) => {
         }
     });
 });
+
+app.route('/api/productos')
+    .get((req, res) => {
+        const sql = 'SELECT * FROM productos';
+        conexionBD.query(sql, async(error, results) => {
+            if (error) {
+                res.status(500);
+                res.send(error).end();
+            } else {
+                try {
+                    const productos = await Promise.all(
+                        results.map(async(element) => {
+                            var usuario = await obtenerUsuario(element.usuario_id);
+                            delete element.usuario_id;
+                            element.usuario = usuario;
+                            return element
+                        })
+                    );
+                    // todo ha funcionado correctamente
+                    res.status(200);
+                    res.json(productos).end();
+                } catch (err) {
+                    res.status(500);
+                    res.json({ message: 'error al obtener usuario de producto' }).end();
+                }
+            }
+        });
+    })
+    .post((req, res) => {
+        var nuevoProducto = req.body;
+        const sqlmy = "SELECT id FROM usuarios WHERE username = \'" + req.body.usuario + "\'"
+        conexionBD.query(sqlmy, (error, results) => {
+            if (error) {
+                res.status(400).send({ message: 'No existe usuario' });
+            } else {
+                const id_usuario = results[0].id;
+
+                const sql = 'INSERT INTO productos (nombre, descripcion, usuario_id, precio) VALUES (' +
+                    '\'' + nuevoProducto.nombre + '\', ' +
+                    '\'' + nuevoProducto.descripcion + '\', ' +
+                    id_usuario + ', ' +
+                    '\'' + nuevoProducto.precio + '\')';
+                // realizamos la query
+                conexionBD.query(sql, async(error, results) => {
+                    if (error) {
+                        // Algún campo no válido
+                        res.status(400);
+                        res.send(error).end();
+                    } else {
+                        const sqlId = 'SELECT id FROM productos WHERE nombre = \'' + nuevoProducto.nombre +
+                            '\' and descripcion = \'' + nuevoProducto.descripcion + '\''
+                        conexionBD.query(sqlId, (error, result) => {
+                            if (error) {
+                                res.status(500);
+                                res.send(error).end();
+                            } else {
+                                // se ha creado el producto y se envía localización del mismo en la caecera
+                                res.status(201);
+                                res.location(host + ':' + port + '/api/productos/' + result[0].id).end();
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    });
+
 
 app.route('/api/usuarios')
     .get((req, res) => {
@@ -159,7 +240,7 @@ app.route('/api/usuarios/:username')
                 } else {
                     // se ha eliminado el producto con éxito
                     res.status(201);
-                    res.send({ emssage: "Se ha eliminado el producto correctamente." }).end();
+                    res.send({ message: "Se ha eliminado el producto correctamente." }).end();
                 }
             });
         } else {
@@ -194,7 +275,7 @@ app.route('/api/productos/:id')
                     };
                     // Buscamos el usuario que ha subido el producto y cogemos su info excepto la contraseña
                     const sql1 = 'SELECT id, username, email, nombre, apellidos, direccion, fecha_nacimiento FROM usuarios WHERE usuarios.id = ' + results[0].usuario_id;
-                    conexionBD.query(sql, (error, results) => {
+                    conexionBD.query(sql1, (error, results) => {
                         if (error) {
                             res.status(500);
                             res.send(error).end();

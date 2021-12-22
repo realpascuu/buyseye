@@ -11,8 +11,7 @@ exports.yaHaSidoAutetificado = function(req, res, next) {
             .send({ message: "Esta petición no tiene cabecera de autentificación" });
     }
 
-    var token = req.headers.authorization.split(" ")[1];
-    var playload = jwt.decode(token, config.TOKEN_SECRET);
+    var playload = jwt.decode(req.headers.authorization, config.TOKEN_SECRET);
 
     if (playload.exp <= moment().unix()) {
         return res.status(401).send({ message: "¡El token ya ha expirado!" });
